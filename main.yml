@@ -1,6 +1,6 @@
 ---
 - name: Obtener información del servidor
-  hosts: linux_servers
+  hosts: all
   become: yes
   gather_facts: yes
   tasks:
