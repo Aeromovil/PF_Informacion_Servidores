@@ -1,0 +1,55 @@
+---
+- name: Obtener información del servidor
+  hosts: linux_servers
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Obtener información de redes
+      shell: |
+        ip addr show
+        netstat -tuln
+        route -n
+      register: redes_info
+      changed_when: false
+
+    - name: Obtener información de seguridad
+      shell: |
+        sestatus
+        iptables -L
+        firewall-cmd --list-all
+        getent passwd
+        getent group
+        last
+      register: seguridad_info
+      changed_when: false
+
+    - name: Obtener información del sistema operativo
+      command: |
+        cat /etc/os-release
+        hostnamectl
+        df -h
+        mount
+        uptime
+      register: os_info
+      changed_when: false
+
+    - name: Obtener versión de Java
+      command: |
+        java -version
+      register: java_version
+      changed_when: false
+
+    - name: Validar procesos de Java
+      shell: |
+        pgrep java
+      register: java_processes
+      changed_when: false
+
+    - debug:
+        var: item.stdout_lines
+      with_items:
+        - "{{ redes_info.stdout }}"
+        - "{{ seguridad_info.stdout }}"
+        - "{{ os_info.stdout }}"
+        - "{{ java_version.stdout }}"
+        - "{{ java_processes.stdout }}"
