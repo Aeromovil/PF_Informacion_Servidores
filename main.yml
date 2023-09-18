@@ -1,7 +1,7 @@
 ---
 - name: Obtener información del servidor
   hosts: all
-  become: yes
+  #become: yes
   gather_facts: yes
   tasks:
     - name: Obtener información de redes
